@@ -3144,7 +3144,7 @@ end
 
 function ReaderStatistics.onSync(local_path, cached_path, income_path)
     local conn_income = SQ3.open(income_path)
-    local ok1, v1 = pcall(conn_income.rowexec, conn_income, "PRAGMA schema_version")
+    local ok1, v1 = pcall(conn_income.rowexec, conn_income, "PRAGMA schema_version;")
     if not ok1 or tonumber(v1) == 0 then
         -- no income db or wrong db, first time sync
         logger.warn("statistics open income DB failed", v1)
@@ -3154,7 +3154,7 @@ function ReaderStatistics.onSync(local_path, cached_path, income_path)
     local sql = "attach '" .. income_path:gsub("'", "''") .."' as income_db;"
     -- then we try to open cached db
     local conn_cached = SQ3.open(cached_path)
-    local ok2, v2 = pcall(conn_cached.rowexec, conn_cached, "PRAGMA schema_version")
+    local ok2, v2 = pcall(conn_cached.rowexec, conn_cached, "PRAGMA schema_version;")
     local attached_cache
     if not ok2 or tonumber(v2) == 0 then
         -- no cached or error, no item to delete
@@ -3197,7 +3197,7 @@ function ReaderStatistics.onSync(local_path, cached_path, income_path)
     conn_cached:close()
     conn_income:close()
     local conn = SQ3.open(local_path)
-    local ok3, v3 = pcall(conn.exec, conn, "PRAGMA schema_version")
+    local ok3, v3 = pcall(conn.exec, conn, "PRAGMA schema_version;")
     if not ok3 or tonumber(v3) == 0 then
         -- no local db, this is an error
         logger.err("statistics open local DB", v3)
